@@ -16,7 +16,7 @@ then
         	exit 22
 	fi
 else
-	exit 3
 	echo "Ce dossier n'existe pas"
+	exit 3
 fi
 
