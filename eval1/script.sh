@@ -1,31 +1,34 @@
 #!/bin/bash
-file="/tmp/in/"
 
-DIR="/etc/tmp/out"
+lock="/tmp/out/lock"
 
-lock="/tmp/in/lock"
+error=false
 
-if [ -d "!$DIR" ]
+d=$(date +%c)
+
+if [[ -f $lock ]]
 then
-	mkdir /tmp/out
+	echo "Script already in use"
+	exit 22
 else
-	touch /tmp/in/lock
+	touch /tmp/out/lock
 fi
 
-if [ ! -f "$lock" ]
+for files in /tmp/in/*
+do
+if [[ -f $files && -r $files ]]
 then
-	for files in /tmp/in/* 
-	do
-	if [[ -f $file && -r $file ]]
-	then
-        	gzip -r /tmp/in/*
-        	mv $files.gz /tmp/out/
-        	rm /tmp/out/lock
-	else
-		echo "File is unable"
-	fi
-	done
+        gzip -r $files
+        mv $files.gz /tmp/out/
+	echo "$files compressé et envoyé avec succés à $d" >> /tmp/out/logs.dat
 else
-	echo "Script already in use"
-        exit 22
+	echo "$files n'a pas pu etre compressé et/ou envoyé à $d" >> /tmp/out/logs.dat
+fi
+done
+
+rm /tmp/out/lock
+
+if [ "$error"=true]
+then
+	exit 1
 fi
