@@ -23,6 +23,7 @@ then
 	echo "$files compressé et envoyé avec succés à $d" >> /tmp/out/logs.dat
 else
 	echo "$files n'a pas pu etre compressé et/ou envoyé à $d" >> /tmp/out/logs.dat
+	error=true
 fi
 done
 
